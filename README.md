@@ -43,5 +43,7 @@ Changing the objective from 'linear' to 'classifier will switch the training tas
 
 Changing 'trial_num_2' in params will affect training time, changing 'test_num' will affect the number of test trials.
 
+The boolean variable network_load determines whether the system loads a pre-trained network (on the estimation task) or trains the network.
+
 To run a simulation, run the normative_plasticity_cr.py file. After running the simulation, you can plot results with the pl_plot_generator_cr.py file.
 
