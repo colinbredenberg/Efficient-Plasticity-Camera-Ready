@@ -23,14 +23,14 @@ Basic code for generating plots and making them pretty
 Code for generating basic figures after training a network
 
 # List of dependencies
-numpy
-time
-copy
-scipy
-sklearn
-os
-seaborn
-matplotlib
+1. numpy
+2. time
+3. copy
+4. scipy
+5. sklearn
+6. os
+7. seaborn
+8. matplotlib
 
 # Instructions
 Experimental parameters are contained in the pl_exp_params_cr.py file.
