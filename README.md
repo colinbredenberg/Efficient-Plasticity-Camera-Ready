@@ -44,7 +44,7 @@ Code for generating basic figures after training a network
 # Instructions
 Experimental parameters are contained in the pl_exp_params_cr.py file.
 
-Changing the objective from 'linear' to 'classifier will switch the training task from estimation to classification.
+Changing the objective from 'linear' to 'classifier' will switch the training task from estimation to classification.
 
 Changing 'trial_num_2' in params will affect training time, changing 'test_num' will affect the number of test trials.
 
