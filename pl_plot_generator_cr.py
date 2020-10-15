@@ -44,19 +44,20 @@ if (exp_params.objective == 'classifier'):
 if (exp_params.objective == 'linear'):
     plt.show()
     
-    fig, axes = plt.subplots(1, figsize = (5, 5));
-    #objective plot
-    plotters.objective_plot(np.concatenate((obj_record[0:-1,:], obj_record_2[0:-1,:]), axis = 0), axes)
+    if (not(exp_params.network_load)):
+        fig, axes = plt.subplots(1, figsize = (5, 5));
+        #objective plot
+        plotters.objective_plot(np.concatenate((obj_record[0:-1,:], obj_record_2[0:-1,:]), axis = 0), axes)
     
-    #in_out_compare
-    fig, axes = plt.subplots(1, figsize = (5, 5));
-    trial_num = 246#245
-    test_num = 9
-    test_range = np.arange(test_num, test_num + 1);
-    trial_range = np.arange(trial_num, trial_num + 1);
-    dim_range = np.arange(0,1);
-    time_vec = np.arange(0, params['T'], params['dt']*network.params['record_res'])
-    plotters.in_out_compare(time_vec, o_record_2, target_record_2, trial_range, dim_range, axes);
+        #in_out_compare
+        fig, axes = plt.subplots(1, figsize = (5, 5));
+        trial_num = 246#245
+        test_num = 9
+        test_range = np.arange(test_num, test_num + 1);
+        trial_range = np.arange(trial_num, trial_num + 1);
+        dim_range = np.arange(0,1);
+        time_vec = np.arange(0, params['T'], params['dt']*network.params['record_res'])
+        plotters.in_out_compare(time_vec, o_record_2, target_record_2, trial_range, dim_range, axes);
     
     #output prior to learning
     fig, axes = plt.subplots(1, figsize = (5,5))

@@ -344,6 +344,7 @@ if __name__ == '__main__':
         print('training time 2 is: ' + str(runtime))
     else: #if loading the pretrained network
         network = network_load('network_cr')
+        t_start = time.time()
     #run the second test
     if (params['test_num'] > 0):
         r_test_2, o_test_2, i_test_2, theta_test_2, target_test_2, obj_test_2 = network.train_run(params['T'], 0.1* np.ones((params['N'],)), train = False, tuning = True, rt_input = False)
