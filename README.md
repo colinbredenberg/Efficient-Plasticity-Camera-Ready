@@ -5,7 +5,10 @@ Approximate training time on a personal computer: 5 hrs.
 
 Approximate runtime with the pre-trained network on a personal computer: 25 min.
 
-This code trains a basic recurrent neural network to solve either the estimation or classification tasks outlined in the aforementioned paper, using a three-factor synaptic plasticity rule. The file 'network_cr' contains a network pre-trained on the estimation task outlined in the paper.
+This code trains a basic recurrent neural network to solve either the estimation or classification tasks outlined in the aforementioned paper, using a three-factor synaptic plasticity rule.
+
+# network_cr
+Contains a network pre-trained on the estimation task outlined in the paper.
 
 # normative_plasticity_cr.py
 Code containing the PlasticNet class, including the main code for running simulations and generating plots
