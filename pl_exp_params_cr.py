@@ -29,7 +29,7 @@ if (version == 'standard'):
     input_switch_time = 20;
     
     #choose the objective to run either the 'classification' or 'linear' (reproduction) task
-    objective = 'classifier'
+    objective = 'linear'
     #%% Parameters
     #detail all of the fixed parameters for the network
     decoder_only = False
@@ -40,43 +40,30 @@ if (version == 'standard'):
     perturbed = False
     decoder_fixed = perturbed
     within_manifold = False
-    params = {'N': 40,
-              'input_dim': 12,
+    params = {'input_dim': 12,
               'sample_dim': 1, #this is only relevant if there is a change in dimensionality from samples -> inputs. For Von Mises sampling, 1 theta value is turned into an x and a y value.
               'T': 1000,
               'dt': 0.01,
               'trial_num':0,
-              #'trial_num': 40, #number of trials
-              #'trial_num_2': 260,
-              #'test_num': 100, #number of tests to run
               'trial_num_2': 260,
               'test_num': 100,
-              #'trial_num_2': 40,
-              #'test_num': 1,
               'record_period': 1, #number of trials to wait before recording 1 trial
               'R': 1,
-              #'sigma': 0.335,
               'sigma': 0.2,
               'low_r_threshold': 0.001,
               'high_r_threshold': 100,
-              'transient': 40, #40
-              #learning rates for all of the different parameters in the network
-              'learning_rate': 5e-5,
-              'learning_rate_bias': 5e-5,
-              'learning_rate_input': 5e-5,
-              'learning_rate_decoder': 1e-9, #the decoder needs to learn MUCH slower, otherwise it will adapt on the time course of a single stimulus
+              'transient': 40,
               'decoder_update_freq':5,
               'decoder_window':5,
               #parameters for the nonlinearity
               'alpha': 0,
-              'beta': 1/30,#1,
-              'gamma': 30,#1,
+              'beta': 1/30,
+              'gamma': 30,
               'record_res':20} #number of steps to skip in a given trial before taking a record of r or o
     #theta: weighting for the various sliding averages in the simulation
     #theta_obj: weighting for the sliding average of the objective function through time
     #lambda_l1: Lagrange multiplier for the l1 regularizer
     params.update(theta = params['dt']* 3/ input_switch_time, theta_obj = 5e-5, weight_l2 = 0.0001)
-    decoder = np.random.uniform(-1/params['N'], 1/params['N'], size = (params['input_dim'], params['N']));
     #detail all of the function parameters for the network
     param_fns = {'nl': relu_diff,#linear, #nonlinearity
                  'inv_nl': inv_relu_diff,#inv_linear, #inverse nonlinearity
@@ -97,7 +84,6 @@ if (version == 'standard'):
                     'switch_period': 200,
                     'mu_in': 0,
                     'sigma_in': 0.1,
-                    'kappa_in': 1,
                     'sigma_sampler': 0.06, #not to be confused with sigma_in, sigma_sampler determines variance of the MCMC sampling
                     'stim_gain': 0.2,
                     'offset': 0.2,
@@ -114,15 +100,15 @@ if (version == 'standard'):
                          bias_rule = classifier_bias,
                          plasticity_rule = classifier_weight,
                          );
-        input_params.update(kappa_in = 0.75, mu_in = 0);
+        input_params.update(kappa_in = 0.75);
+        params.update(N = 25);
         params.update(theta_thresh = 0,
                       theta_thresh_rev = -np.pi, #the reverse threshold is when there are two classification
                       target_dim = 1,
-                      N = 25,
                       theta_obj = 5e-5,
                       lambda_l2 = 1.5/params['N'],
                       lambda_l1 = 0/params['N'],
-                      learning_rate = 1e-6,
+                      learning_rate = 1e-6, #learning rates for all of the different parameters in the network
                       learning_rate_bias = 1e-6,
                       learning_rate_input = 1e-6,
                       learning_rate_decoder = 1e-8,
@@ -135,11 +121,11 @@ if (version == 'standard'):
         param_fns.update(target_generator = autoencoder,
                          decoder_fn = standard_decoder,
                          objective = MSE_l2)
+        params.update(N = 40);
         params.update(target_dim = 2,
-                      N = 40,
                       lambda_l2 = 1.5/params['N'],
                       lambda_l1 = 0/params['N'],
-                      learning_rate = 5e-6,
+                      learning_rate = 5e-6, #learning rates for all of the different parameters in the network
                       learning_rate_bias = 5e-6,
                       learning_rate_input = 5e-6,
                       learning_rate_decoder = 5e-6,
