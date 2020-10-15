@@ -1,6 +1,9 @@
 # Efficient-Plasticity-Camera-Ready
-Camera ready code repo for the NeuRIPS 2020 paper: "Learning efficient task-dependent representations with synaptic plasticity"
+Camera ready code repo for the NeuRIPS 2020 paper: "Learning efficient task-dependent representations with synaptic plasticity".
+
 Approximate training time on a personal computer: 5 hrs.
+
+This code trains a basic recurrent neural network to solve either the estimation or classification tasks outlined in the aforementioned paper, using a three-factor synaptic plasticity rule.
 
 # normative_plasticity_cr.py
 Code containing the PlasticNet class, including the main code for running simulations and generating plots
