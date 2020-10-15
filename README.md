@@ -34,6 +34,7 @@ Code for generating basic figures after training a network
 6. os
 7. seaborn
 8. matplotlib
+9. dill
 
 # Instructions
 Experimental parameters are contained in the pl_exp_params_cr.py file.
