@@ -21,6 +21,9 @@ np.random.seed(seed = 120994)
 #5. will the changes you just made mess with anything in the rest of the code?
 #6  have you requested enough time on the HPC for your code to run?
 version = 'standard'
+
+network_load = True #will load a pretrained estimation network and run a shorter test simulation (faster runtime)
+
 hpc_control = False #causes all runs of the hpc to learn only the decoder
 #%% The standard set of parameters, for running on the main computer
 #%%

@@ -11,8 +11,26 @@ import time
 import pl_exp_params_cr as exp_params
 import copy
 from scipy import stats
+import os
 from sklearn.decomposition import PCA
 
+if exp_params.network_load:
+    import dill as pickle
+
+def network_save(filename, net):
+    file_handle = os.path.join(os.getcwd(), filename)
+    #save the trained network itself
+    filehandler = open(file_handle, 'wb')
+    pickle.dump(net, filehandler);
+    filehandler.close()
+
+def network_load(filename):
+    #load the trained network itself
+    file_handle = os.path.join(os.getcwd(), filename)
+    filehandler = open(file_handle, 'rb')
+    net = pickle.load(filehandler)
+    filehandler.close()
+    return net
 
 #%% Main Class definition
 class PlasticNet():
@@ -283,45 +301,49 @@ if __name__ == '__main__':
     decoder = copy.deepcopy(exp_params.decoder)
     param_fns = copy.deepcopy(exp_params.param_fns)
     input_params = copy.deepcopy(exp_params.input_params)
-    #%% Generate data and run simulations
-    w_0 = np.random.uniform(-0.3/np.sqrt(params['N']), 0.3/np.sqrt(params['N']), (params['N'], params['N']));
-    i_w_0 = np.random.uniform(-0.5/np.sqrt(params['input_dim']), 0.5/np.sqrt(params['input_dim']), (params['N'], params['input_dim']))
     
-    print(i_w_0[0,:])
-    if (exp_params.objective == 'linear' or exp_params.objective == 'mixed'):
-        initial_bias_offset = 0.;
-    elif(exp_params.objective == 'bci'):
-        initial_bias_offset = 0.;
-    else:
-        initial_bias_offset = 0.7;
-    bias_0 = np.ones((params['N'],)) * initial_bias_offset;
-    print(bias_0)
-    network = PlasticNet(params, param_fns, input_params, decoder, w_0, bias_0, i_w_0)
-    t_start = time.time()
-    #run the initial training session
-    r_record, o_record, input_record, theta_record, target_record, obj_record = network.train_run(params['T'], 0.1* np.ones((params['N'],)), train = True, rt_input = True);
-    #trim the objective_record
-    obj_record = obj_record[::params['record_period']]
-    runtime = time.time() - t_start
-    print('training time is: ' + str(runtime))
-    t_start = time.time()
-    #run the first test
-    if (params['test_num'] > 0):
-        r_test, o_test, i_test, theta_test, target_test, obj_test = network.train_run(params['T'], 0.1* np.ones((params['N'],)), train = False, tuning = True, rt_input = False)
-        obj_test = obj_test[::params['record_period']]
-        if (r_test.shape[0] > 0):
-            network.Net_PCA(r_test)
-    runtime = time.time() - t_start
-    print('test time is: ' + str(runtime))
-    t_start = time.time()
+    #if training a new network
+    if (not(exp_params.network_load)):
+        #%% Generate data and run simulations
+        w_0 = np.random.uniform(-0.3/np.sqrt(params['N']), 0.3/np.sqrt(params['N']), (params['N'], params['N']));
+        i_w_0 = np.random.uniform(-0.5/np.sqrt(params['input_dim']), 0.5/np.sqrt(params['input_dim']), (params['N'], params['input_dim']))
+        
+        print(i_w_0[0,:])
+        if (exp_params.objective == 'linear' or exp_params.objective == 'mixed'):
+            initial_bias_offset = 0.;
+        elif(exp_params.objective == 'bci'):
+            initial_bias_offset = 0.;
+        else:
+            initial_bias_offset = 0.7;
+        bias_0 = np.ones((params['N'],)) * initial_bias_offset;
+        print(bias_0)
+        network = PlasticNet(params, param_fns, input_params, decoder, w_0, bias_0, i_w_0)
+        t_start = time.time()
+        #run the initial training session
+        r_record, o_record, input_record, theta_record, target_record, obj_record = network.train_run(params['T'], 0.1* np.ones((params['N'],)), train = True, rt_input = True);
+        #trim the objective_record
+        obj_record = obj_record[::params['record_period']]
+        runtime = time.time() - t_start
+        print('training time is: ' + str(runtime))
+        t_start = time.time()
+        #run the first test
+        if (params['test_num'] > 0):
+            r_test, o_test, i_test, theta_test, target_test, obj_test = network.train_run(params['T'], 0.1* np.ones((params['N'],)), train = False, tuning = True, rt_input = False)
+            obj_test = obj_test[::params['record_period']]
+            if (r_test.shape[0] > 0):
+                network.Net_PCA(r_test)
+        runtime = time.time() - t_start
+        print('test time is: ' + str(runtime))
+        t_start = time.time()
+        
+        #run the second training session
+        r_record_2, o_record_2, input_record_2, theta_record_2, target_record_2, obj_record_2 = network.train_run(params['T'], 0.1* np.ones((params['N'],)), train = True, train_2 = True, rt_input = True);
     
-    #run the second training session
-    r_record_2, o_record_2, input_record_2, theta_record_2, target_record_2, obj_record_2 = network.train_run(params['T'], 0.1* np.ones((params['N'],)), train = True, train_2 = True, rt_input = True);
-
-    obj_record_2 = obj_record_2[::params['record_period']]
-    runtime = time.time() - t_start
-    print('training time 2 is: ' + str(runtime))
-    
+        obj_record_2 = obj_record_2[::params['record_period']]
+        runtime = time.time() - t_start
+        print('training time 2 is: ' + str(runtime))
+    else: #if loading the pretrained network
+        network = network_load('network_cr')
     #run the second test
     if (params['test_num'] > 0):
         r_test_2, o_test_2, i_test_2, theta_test_2, target_test_2, obj_test_2 = network.train_run(params['T'], 0.1* np.ones((params['N'],)), train = False, tuning = True, rt_input = False)
